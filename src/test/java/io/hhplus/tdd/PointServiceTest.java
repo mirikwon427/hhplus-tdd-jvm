@@ -4,9 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.PointService;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +34,30 @@ public class PointServiceTest {
     assertThat(userPoint).isEqualTo(point);
   }
 
+  @DisplayName("유저의 포인트 내역을 조회한다.")
+  @Test
+  void test() {
+    // given
+    long userId = 1L;
+
+    UserPointTable userPointTable = mock(UserPointTable.class);
+    PointHistoryTable pointHistoryTable = mock(PointHistoryTable.class);
+
+    List<PointHistory> pointHistories = List.of(
+        new PointHistory(1L, userId, 100, TransactionType.CHARGE,0),
+        new PointHistory(2L, userId, 200, TransactionType.USE,0),
+        new PointHistory(3L, userId, 300, TransactionType.CHARGE,0)
+    );
+    when(pointHistoryTable.selectAllByUserId(userId)).thenReturn(pointHistories);
+
+    // when
+    PointService pointService = new PointService(userPointTable, pointHistoryTable);
+    List<PointHistory> histories = pointService.getPointHistories(userId);
+
+    // then
+    assertThat(pointHistories).isNotEmpty();
+    assertThat(histories.get(0).amount()).isEqualTo(pointHistories.get(0).amount());
+  }
 
 
 }
