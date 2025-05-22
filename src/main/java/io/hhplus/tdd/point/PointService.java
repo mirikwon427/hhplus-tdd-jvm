@@ -22,6 +22,6 @@ public class PointService {
   }
 
   public List<PointHistory> getPointHistories(long userId) {
-
+    return pointHistoryTable.selectAllByUserId(userId);
   }
 }
