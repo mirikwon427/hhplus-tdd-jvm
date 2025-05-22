@@ -76,7 +76,7 @@ public class PointServiceTest {
     // when
     PointService pointService = new PointService(userPointTable, pointHistoryTable);
     UserPoint chargedPoint =pointService.chargeUserPoint(userId, amount);
-    pointService.insertPointHistory(userId, amount, TransactionType.CHARGE, 0);
+    pointService.insertPointHistory(userId, amount, TransactionType.CHARGE);
 
     // then
     verify(userPointTable).insertOrUpdate(userId, amount);

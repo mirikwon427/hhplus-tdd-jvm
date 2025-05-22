@@ -24,4 +24,14 @@ public class PointService {
   public List<PointHistory> getPointHistories(long userId) {
     return pointHistoryTable.selectAllByUserId(userId);
   }
+
+  public UserPoint chargeUserPoint(long userId, long amount) {
+    insertPointHistory(userId, amount, TransactionType.CHARGE);
+    return userPointTable.insertOrUpdate(userId, amount);
+  }
+
+  public void insertPointHistory(long userId, long amount, TransactionType type) {
+    long updateMillis = System.currentTimeMillis();
+    pointHistoryTable.insert(userId, amount, type, updateMillis);
+  }
 }
