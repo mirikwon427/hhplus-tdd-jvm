@@ -37,7 +37,7 @@ public class PointServiceTest {
 
   @DisplayName("유저의 포인트 내역을 조회한다.")
   @Test
-  void test() {
+  void testGetUserPointHistories() {
     // given
     long userId = 1L;
 
