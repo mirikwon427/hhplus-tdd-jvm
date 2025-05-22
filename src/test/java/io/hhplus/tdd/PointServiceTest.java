@@ -24,10 +24,11 @@ public class PointServiceTest {
     long point = 100l;
 
     UserPointTable userPointTable = mock(UserPointTable.class);
+    PointHistoryTable pointHistoryTable = mock(PointHistoryTable.class);
     when(userPointTable.selectById(id)).thenReturn(new UserPoint(id, point, 0));
 
     // when
-    PointService pointService = new PointService(userPointTable);
+    PointService pointService = new PointService(userPointTable, pointHistoryTable);
     long userPoint = pointService.getUserPoint(id);
 
     // then
