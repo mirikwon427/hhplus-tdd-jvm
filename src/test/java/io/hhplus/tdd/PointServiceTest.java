@@ -1,6 +1,8 @@
 package io.hhplus.tdd;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,18 +70,19 @@ public class PointServiceTest {
     long userId = 1L;
     long amount = 100L;
     UserPoint userPoint = new UserPoint(userId, 0, 0);
+    UserPoint chargedPoint = new UserPoint(userId, amount, System.currentTimeMillis());
 
     UserPointTable userPointTable = mock(UserPointTable.class);
     PointHistoryTable pointHistoryTable = mock(PointHistoryTable.class);
     when(userPointTable.selectById(userId)).thenReturn(userPoint);
+    when(userPointTable.insertOrUpdate(userId, amount)).thenReturn(chargedPoint);
 
     // when
     PointService pointService = new PointService(userPointTable, pointHistoryTable);
-    UserPoint chargedPoint =pointService.chargeUserPoint(userId, amount);
+    chargedPoint = pointService.chargeUserPoint(userId, amount);
 
     // then
-    verify(userPointTable).insertOrUpdate(userId, amount);
-    verify(pointHistoryTable).insert(userId, amount, TransactionType.CHARGE, 0);
+    verify(pointHistoryTable).insert(eq(userId), eq(amount), eq(TransactionType.CHARGE), anyLong());
     assertThat(chargedPoint.point()).isEqualTo(userPoint.point() + amount);
   }
 
